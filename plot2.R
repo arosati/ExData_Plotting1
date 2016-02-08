@@ -1,0 +1,15 @@
+uci<-read.table("household_power_consumption.txt", header=TRUE, sep = ";", stringsAsFactors=FALSE)
+uci$Date<-as.Date(uci$Date, "%d/%m/%Y")
+uci$DateTime <- paste(uci$Date, uci$Time, sep=" ", collapse = NULL)
+str(uci)
+feb2<-with(uci, uci[(Date >= "2007-02-01" & Date <= "2007-02-02"), ])
+summary(feb2)
+
+feb2$Global_active_power<- as.numeric(feb2$Global_active_power)
+feb2$DateTime<-strptime(feb2$DateTime, format = "%Y-%m-%d %h:%M:%s", tz = "")
+feb2$Time<-format(feb2$Time, format="%H:%M:%S", tz = "", usetz = FALSE)
+feb2$DTtest<-as.POSIXct(strptime(feb2$DateTime, "%Y-%m-%d %H:%M:%S"))
+str(feb2)
+plot(feb2$Global_active_power~feb2$DTtest, type="l", pch=46, ylab="Global Active Power (kiloWatts)", xlab="", height=480,width=480)
+dev.copy(png,'plot2.png')
+dev.off
